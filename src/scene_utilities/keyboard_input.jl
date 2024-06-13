@@ -1,8 +1,15 @@
-function init_keyboard_input(fig)
+function init_input(fig, ax)
     w_pressed = Observable(false)
     a_pressed = Observable(false)
     s_pressed = Observable(false)
     d_pressed = Observable(false)
+    mouse_position = Observable([Inf,0.0])
+    
+    on(events(fig).mouseposition) do pos
+		if is_mouseinside(ax)
+			mouse_position[] = mouseposition(ax)
+		end
+    end
 
     on(events(fig).keyboardbutton) do event
         if event.action == Keyboard.press
@@ -27,5 +34,5 @@ function init_keyboard_input(fig)
             end
         end
     end
-    return (w_pressed, a_pressed, s_pressed, d_pressed)
+    return (w_pressed, a_pressed, s_pressed, d_pressed, mouse_position)
 end
