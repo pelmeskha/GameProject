@@ -48,20 +48,17 @@ function update_position(object::Tank, input)
         object.turret.angle[] += object.hull.angle_speed
     end
 
-    #= object.hull.vx[] *= object.hull.friction
-    object.hull.vy[] *= object.hull.friction =#
-    # Вычисление проекций скорости на оси танка
+    # Speed projections
     forward_speed = object.hull.vx[] * sin(object.hull.angle[]) + object.hull.vy[] * cos(object.hull.angle[])
     side_speed = object.hull.vx[] * cos(object.hull.angle[]) - object.hull.vy[] * sin(object.hull.angle[])
 
-    # Применение коэффициентов трения
+    # Applying friction
     forward_friction = object.hull.forward_friction
     side_friction = object.hull.side_friction
 
     forward_speed *= forward_friction
     side_speed *= side_friction
 
-    # Преобразование скоростей обратно в глобальные координаты
     object.hull.vx[] = forward_speed * sin(object.hull.angle[]) + side_speed * cos(object.hull.angle[])
     object.hull.vy[] = forward_speed * cos(object.hull.angle[]) - side_speed * sin(object.hull.angle[])
     
