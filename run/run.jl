@@ -14,4 +14,4 @@ display_object(ax1,tank_2)
 input = init_keyboard_input(fig)
 
 display(fig)
-@async update_scene(fig, ax1, [tank_1, tank_2], input)
+@async update_scene(fig, ax1, [tank_2], input)
