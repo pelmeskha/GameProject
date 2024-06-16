@@ -10,14 +10,24 @@ function display_object(ax, object::AtomicObject)
         ),
         interpolate=false,
     )
-    return img
+    return [img]
 end
 function display_object(ax, object::Tank)
     img1, img2 = display_object(ax, object.hull), display_object(ax, object.turret)
-    return img1, img2
+    return [img1, img2]
+end
+function update_position(object::StraightPropelling)
+    if object.t_life[] < object.t_end
+        object.x[] += object.speed * cos(object.angle)
+        object.y[] += object.speed * sin(object.angle)
+        object.t_life[] += global_dt
+        return false
+    else
+        return true
+    end
 end
 function update_position(object::Tank, input)
-    w_pressed, a_pressed, s_pressed, d_pressed, mouse_position = input
+    w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, _ = input
     if w_pressed[]
         object.hull.vx[] += object.hull.acceleration * cos(object.hull.angle[])
         object.hull.vy[] += object.hull.acceleration * sin(object.hull.angle[])
@@ -59,11 +69,12 @@ function update_position(object::Tank, input)
 
     object.turret.angle[] = vector_angle([object.hull.x[], object.hull.y[]], mouse_position[])
 end
-function update_scene(fig, ax, objects, input)
-    while isopen(fig.scene)
-        for object in objects
-            update_position(object, input)
+function remove_object_from_scene(ax,object)
+    if isa(object, AbstractVector) && length(object) > 1
+        for instance in object
+            remove_object_from_scene(ax, instance)
         end
-        sleep(0.006)
+    else
+        delete!(ax, object[1])
     end
 end

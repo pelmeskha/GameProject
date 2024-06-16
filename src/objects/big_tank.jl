@@ -23,7 +23,7 @@ struct BigTank <: Tank
         turret = Turret(
             lift((x_pos, a) -> (turret_disolacement_x*sin(a) + turret_disolacement_y*cos(a) + x_pos), x, angle),
             lift((y_pos, a) -> (-turret_disolacement_x*cos(a) + turret_disolacement_y*sin(a) + y_pos), y, angle),
-            Observable(0.0),
+            Observable(angle[]),
             0.015, # turret angular speed
             load("src/textures/big_tank/turret.png"),
             17.0, 7.0, # turret size
