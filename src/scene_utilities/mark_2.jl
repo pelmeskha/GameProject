@@ -1,7 +1,8 @@
 function proceed_interactions(object::Tank, input, ax, temporary_objects)
-    _, _, _, _, _, left_mouse_pressed = input
-    if left_mouse_pressed[]
+    _, _, _, _, _, left_mouse_pressed_continuous, left_mouse_pressed_single = input
+    if left_mouse_pressed_single[]
         push!(temporary_objects[],spawn_straight_propelling(ax,big_tank_shot(object.turret.x[],object.turret.y[],object.turret.angle[])))
+        left_mouse_pressed_single[]=false
     end
 end
 function update_scene!(fig, ax, objects, temporary_objects, input)

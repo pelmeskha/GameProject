@@ -27,7 +27,7 @@ function update_position(object::StraightPropelling)
     end
 end
 function update_position(object::Tank, input)
-    w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, _ = input
+    w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, _, _ = input
     if w_pressed[]
         object.hull.vx[] += object.hull.acceleration * cos(object.hull.angle[])
         object.hull.vy[] += object.hull.acceleration * sin(object.hull.angle[])

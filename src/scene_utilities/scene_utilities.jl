@@ -4,7 +4,7 @@ using GLMakie, Random, ColorTypes, FileIO
 using ...Objects
 using ...Geometry
 
-const  global_dt = 0.006
+global_dt = 0.001
 
 include("background.jl")
 export display_background!, generate_background

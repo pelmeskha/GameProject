@@ -4,7 +4,8 @@ function init_input(fig, ax)
     s_pressed = Observable(false)
     d_pressed = Observable(false)
     mouse_position = Observable([Inf,0.0])
-    left_mouse_pressed = Observable(false)
+    left_mouse_pressed_continious = Observable(false)
+    left_mouse_pressed_single = Observable(false)
     prev_left_mouse_pressed = false
     
     on(events(fig).mouseposition) do pos
@@ -16,9 +17,15 @@ function init_input(fig, ax)
     on(events(fig).mousebutton) do event
         if event.button == Mouse.left
             if event.action == Mouse.press
-                left_mouse_pressed[] = true
+                left_mouse_pressed_continious[] = true
+                if !prev_left_mouse_pressed
+                    left_mouse_pressed_single[] = true
+                    prev_left_mouse_pressed = true
+                end
             elseif event.action == Mouse.release
-                left_mouse_pressed[] = false
+                left_mouse_pressed_continious[] = false
+                left_mouse_pressed_single[] = false
+                prev_left_mouse_pressed = false
             end
         end
     end
@@ -46,5 +53,5 @@ function init_input(fig, ax)
             end
         end
     end
-    return (w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, left_mouse_pressed)
+    return (w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, left_mouse_pressed_continious, left_mouse_pressed_single)
 end
