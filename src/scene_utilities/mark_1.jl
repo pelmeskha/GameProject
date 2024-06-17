@@ -4,11 +4,15 @@ function display_object(ax, object::AtomicObject)
         (-(object.pic_width / 2), (object.pic_width / 2)),
         (-(object.pic_height / 2), (object.pic_height / 2)),
         object.image,
-        transformation= Transformation(
-            translation=lift((x_pos, y_pos) -> Vec3f(x_pos, y_pos, 0), object.x, object.y),
-            rotation=lift(a -> Quaternion(0, 0, cos(a/2), -sin(a/2)), object.angle), # 0 0 cos(a/2), sin(a/2)
+        transformation = Transformation(
+            translation = lift(
+                (x_pos, y_pos) -> Vec3f(x_pos, y_pos, 0),
+                object.x,
+                object.y,
+            ),
+            rotation = lift(a -> Quaternion(0, 0, cos(a / 2), -sin(a / 2)), object.angle), # 0 0 cos(a/2), sin(a/2)
         ),
-        interpolate=false,
+        interpolate = false,
     )
     return [img]
 end
@@ -28,16 +32,20 @@ end
 function update_position(object::Tank, input, delta_time::Real)
     w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, _, _ = input
     if w_pressed[]
-        object.hull.vx[] += delta_time * object.hull.acceleration * cos(object.hull.angle[])
-        object.hull.vy[] += delta_time * object.hull.acceleration * sin(object.hull.angle[])
+        object.hull.vx[] +=
+            delta_time * object.hull.acceleration * cos(object.hull.angle[])
+        object.hull.vy[] +=
+            delta_time * object.hull.acceleration * sin(object.hull.angle[])
     end
     if a_pressed[]
         object.hull.angle[] += delta_time * object.hull.angle_speed
         object.turret.angle[] += delta_time * object.hull.angle_speed
     end
     if s_pressed[]
-        object.hull.vx[] -= delta_time * object.hull.acceleration * cos(object.hull.angle[])
-        object.hull.vy[] -= delta_time * object.hull.acceleration * sin(object.hull.angle[])
+        object.hull.vx[] -=
+            delta_time * object.hull.acceleration * cos(object.hull.angle[])
+        object.hull.vy[] -=
+            delta_time * object.hull.acceleration * sin(object.hull.angle[])
     end
     if d_pressed[]
         object.hull.angle[] -= delta_time * object.hull.angle_speed
@@ -45,8 +53,12 @@ function update_position(object::Tank, input, delta_time::Real)
     end
 
     # Speed projections
-    forward_speed = object.hull.vx[] * cos(object.hull.angle[]) + object.hull.vy[] * sin(object.hull.angle[])
-    side_speed = object.hull.vx[] * sin(object.hull.angle[]) - object.hull.vy[] * cos(object.hull.angle[])
+    forward_speed =
+        object.hull.vx[] * cos(object.hull.angle[]) +
+        object.hull.vy[] * sin(object.hull.angle[])
+    side_speed =
+        object.hull.vx[] * sin(object.hull.angle[]) -
+        object.hull.vy[] * cos(object.hull.angle[])
 
     # Applying friction
     forward_friction = exp(-object.hull.forward_friction * delta_time)
@@ -55,9 +67,11 @@ function update_position(object::Tank, input, delta_time::Real)
     forward_speed *= forward_friction
     side_speed *= side_friction
 
-    object.hull.vx[] = forward_speed * cos(object.hull.angle[]) + side_speed * sin(object.hull.angle[])
-    object.hull.vy[] = forward_speed * sin(object.hull.angle[]) - side_speed * cos(object.hull.angle[])
-    
+    object.hull.vx[] =
+        forward_speed * cos(object.hull.angle[]) + side_speed * sin(object.hull.angle[])
+    object.hull.vy[] =
+        forward_speed * sin(object.hull.angle[]) - side_speed * cos(object.hull.angle[])
+
     speed = sqrt(object.hull.vx[]^2 + object.hull.vy[]^2)
     if speed > object.hull.max_speed
         object.hull.vx[] *= object.hull.max_speed / speed
@@ -69,9 +83,10 @@ function update_position(object::Tank, input, delta_time::Real)
     object.hull.x[] += delta_time * object.hull.vx[]
     object.hull.y[] += delta_time * object.hull.vy[]
 
-    object.turret.angle[] = vector_angle([object.hull.x[], object.hull.y[]], mouse_position[])
+    object.turret.angle[] =
+        vector_angle([object.hull.x[], object.hull.y[]], mouse_position[])
 end
-function remove_object_from_scene(ax,object)
+function remove_object_from_scene(ax, object)
     if isa(object, AbstractVector) && length(object) > 1
         for instance in object
             remove_object_from_scene(ax, instance)

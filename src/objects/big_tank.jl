@@ -11,37 +11,60 @@ struct BigTank <: Tank
         turret_disolacement_x = 0.0
         turret_disolacement_y = -1.0
         hull = TankHull(
-            x, y, vx, vy, angle, 
-            pi/3, # angle_speed
+            x,
+            y,
+            vx,
+            vy,
+            angle,
+            pi / 3, # angle_speed
             70.0, # acceleration
             30.0,  # max_speed
             2.0, # forward_friction
             4.0, # side_friction
             load("src/textures/big_tank/hull.png"),
-            13.0, 13.0, # hull size
+            13.0,
+            13.0, # hull size
         )
         turret = Turret(
-            lift((x_pos, a) -> (turret_disolacement_x*sin(a) + turret_disolacement_y*cos(a) + x_pos), x, angle),
-            lift((y_pos, a) -> (-turret_disolacement_x*cos(a) + turret_disolacement_y*sin(a) + y_pos), y, angle),
+            lift(
+                (x_pos, a) -> (
+                    turret_disolacement_x * sin(a) +
+                    turret_disolacement_y * cos(a) +
+                    x_pos
+                ),
+                x,
+                angle,
+            ),
+            lift(
+                (y_pos, a) -> (
+                    -turret_disolacement_x * cos(a) +
+                    turret_disolacement_y * sin(a) +
+                    y_pos
+                ),
+                y,
+                angle,
+            ),
             Observable(angle[]),
             0.015, # turret angular speed
             load("src/textures/big_tank/turret.png"),
-            17.0, 7.0, # turret size
+            17.0,
+            7.0, # turret size
         )
         new(hull, turret)
     end
 end
 
-BigTank(x::Real,y::Real,vx::Real,vy::Real,angle::Real) = 
-    BigTank(Observable(x),Observable(y),Observable(vx),Observable(vy),Observable(angle))
+BigTank(x::Real, y::Real, vx::Real, vy::Real, angle::Real) = BigTank(
+    Observable(x),
+    Observable(y),
+    Observable(vx),
+    Observable(vy),
+    Observable(angle),
+)
 
 BigTank(x::Real, y::Real) = BigTank(Observable(x), Observable(y))
 
-BigTank(x::Observable{Float64}, y::Observable{Float64}) = BigTank(
-    x, y,
-    Observable(0.0),
-    Observable(0.0),
-    Observable(0.0),
-)
+BigTank(x::Observable{Float64}, y::Observable{Float64}) =
+    BigTank(x, y, Observable(0.0), Observable(0.0), Observable(0.0))
 
 BigTank() = BigTank(Observable(0.0), Observable(0.0))

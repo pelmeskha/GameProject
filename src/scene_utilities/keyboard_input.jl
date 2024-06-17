@@ -3,14 +3,14 @@ function init_input(fig, ax)
     a_pressed = Observable(false)
     s_pressed = Observable(false)
     d_pressed = Observable(false)
-    mouse_position = Observable([Inf,0.0])
+    mouse_position = Observable([Inf, 0.0])
     left_mouse_pressed_continious = Observable(false)
     left_mouse_pressed_single = Observable(false)
-    
+
     on(events(fig).mouseposition) do pos
-		if is_mouseinside(ax)
-			mouse_position[] = mouseposition(ax)
-		end
+        if is_mouseinside(ax)
+            mouse_position[] = mouseposition(ax)
+        end
     end
 
     on(events(fig).mousebutton) do event
@@ -47,5 +47,13 @@ function init_input(fig, ax)
             end
         end
     end
-    return (w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, left_mouse_pressed_continious, left_mouse_pressed_single)
+    return (
+        w_pressed,
+        a_pressed,
+        s_pressed,
+        d_pressed,
+        mouse_position,
+        left_mouse_pressed_continious,
+        left_mouse_pressed_single,
+    )
 end
