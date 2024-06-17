@@ -16,33 +16,32 @@ function display_object(ax, object::Tank)
     img1, img2 = display_object(ax, object.hull), display_object(ax, object.turret)
     return [img1, img2]
 end
-function update_position(object::StraightPropelling)
-    if object.t_life[] < object.t_end
-        object.x[] += object.speed * cos(object.angle)
-        object.y[] += object.speed * sin(object.angle)
-        object.t_life[] += global_dt
+function update_position(object::StraightPropelling, current_time::Real, delta_time::Real)
+    if current_time < object.t_end
+        object.x[] += delta_time * object.speed * cos(object.angle)
+        object.y[] += delta_time * object.speed * sin(object.angle)
         return false
     else
         return true
     end
 end
-function update_position(object::Tank, input)
+function update_position(object::Tank, input, delta_time::Real)
     w_pressed, a_pressed, s_pressed, d_pressed, mouse_position, _, _ = input
     if w_pressed[]
-        object.hull.vx[] += object.hull.acceleration * cos(object.hull.angle[])
-        object.hull.vy[] += object.hull.acceleration * sin(object.hull.angle[])
+        object.hull.vx[] += delta_time * object.hull.acceleration * cos(object.hull.angle[])
+        object.hull.vy[] += delta_time * object.hull.acceleration * sin(object.hull.angle[])
     end
     if a_pressed[]
-        object.hull.angle[] += object.hull.angle_speed
-        object.turret.angle[] += object.hull.angle_speed
+        object.hull.angle[] += delta_time * object.hull.angle_speed
+        object.turret.angle[] += delta_time * object.hull.angle_speed
     end
     if s_pressed[]
-        object.hull.vx[] -= object.hull.acceleration * cos(object.hull.angle[])
-        object.hull.vy[] -= object.hull.acceleration * sin(object.hull.angle[])
+        object.hull.vx[] -= delta_time * object.hull.acceleration * cos(object.hull.angle[])
+        object.hull.vy[] -= delta_time * object.hull.acceleration * sin(object.hull.angle[])
     end
     if d_pressed[]
-        object.hull.angle[] -= object.hull.angle_speed
-        object.turret.angle[] -= object.hull.angle_speed
+        object.hull.angle[] -= delta_time * object.hull.angle_speed
+        object.turret.angle[] -= delta_time * object.hull.angle_speed
     end
 
     # Speed projections
@@ -50,8 +49,8 @@ function update_position(object::Tank, input)
     side_speed = object.hull.vx[] * sin(object.hull.angle[]) - object.hull.vy[] * cos(object.hull.angle[])
 
     # Applying friction
-    forward_friction = object.hull.forward_friction
-    side_friction = object.hull.side_friction
+    forward_friction = exp(-object.hull.forward_friction * delta_time)
+    side_friction = exp(-object.hull.side_friction * delta_time)
 
     forward_speed *= forward_friction
     side_speed *= side_friction
@@ -63,9 +62,12 @@ function update_position(object::Tank, input)
     if speed > object.hull.max_speed
         object.hull.vx[] *= object.hull.max_speed / speed
         object.hull.vy[] *= object.hull.max_speed / speed
+    elseif speed < 1e-2
+        object.hull.vx[] = 0.0
+        object.hull.vy[] = 0.0
     end
-    object.hull.x[] += object.hull.vx[]
-    object.hull.y[] += object.hull.vy[]
+    object.hull.x[] += delta_time * object.hull.vx[]
+    object.hull.y[] += delta_time * object.hull.vy[]
 
     object.turret.angle[] = vector_angle([object.hull.x[], object.hull.y[]], mouse_position[])
 end

@@ -12,11 +12,11 @@ struct SimpleTank <: Tank
         turret_disolacement_y = 0.0
         hull = TankHull(
             x, y, vx, vy, angle,
-            0.03, # angle_speed
-            0.02, # acceleration
-            1.0,  # max_speed
-            0.98, # forward_friction
-            0.8,  # side_friction
+            pi/2, # angle_speed
+            100.0, # acceleration
+            50.0,  # max_speed
+            3.00, # forward_friction
+            5.00,  # side_friction
             load("src/textures/simple_tank/hull.png"),
             9.0, 9.0, # hull size
         )

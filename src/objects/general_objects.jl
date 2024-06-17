@@ -41,7 +41,7 @@ struct StraightPropelling <: Projectile
     y::Observable{Float64}
     angle::Real
     speed::Real
-    t_life::Observable{Float64}
+    t_life::Observable{Float64} # unused
     t_end::Real
     image
     pic_width::Real

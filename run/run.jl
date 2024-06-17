@@ -30,5 +30,4 @@ temp_objects=Observable([])
 input = init_input(fig, ax)
 
 display(fig)
-@async update_scene!(fig, ax, [tank_1], temp_objects, input)
-
+@async update_scene!(fig, ax, [tank_4], temp_objects, input)
